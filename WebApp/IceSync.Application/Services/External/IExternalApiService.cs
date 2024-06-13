@@ -1,4 +1,4 @@
-﻿using IceSync.Application.Models;
+﻿using IceSync.Application.Models.ExternalApi;
 using System;
 
 namespace IceSync.Application.Services.External

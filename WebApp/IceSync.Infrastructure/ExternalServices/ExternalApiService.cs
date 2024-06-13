@@ -1,11 +1,11 @@
 ﻿using Microsoft.Extensions.Options;
-using IceSync.Application.Models;
 using IceSync.Application.Models.Config;
 using IceSync.Application.Models.Identity;
 using System.Net.Http.Headers;
 using System.Net.Http.Json;
 using IceSync.Application.Services.External;
 using Microsoft.Extensions.Caching.Memory;
+using IceSync.Application.Models.ExternalApi;
 
 namespace IceSync.Application.Integrations
 {
@@ -53,18 +53,34 @@ namespace IceSync.Application.Integrations
 
         public async Task<IEnumerable<ExternalApiWorkflow>> GetWorkflowsAsync()
         {
-            _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", await GetTokenAsync());
-            var response = await _httpClient.GetAsync(_settings.BaseUrl + "/workflows");
-            response.EnsureSuccessStatusCode();
+            try
+            {
+                _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", await GetTokenAsync());
+                var response = await _httpClient.GetAsync(_settings.BaseUrl + "/workflows");
+                response.EnsureSuccessStatusCode();
 
-            return await response.Content.ReadFromJsonAsync<IEnumerable<ExternalApiWorkflow>>();
+                return await response.Content.ReadFromJsonAsync<IEnumerable<ExternalApiWorkflow>>();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message); // log fir the background service
+                throw;
+            }
         }
 
         public async Task<bool> RunWorkflowAsync(int workflowId)
         {
-            _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", await GetTokenAsync());
-            var response = await _httpClient.PostAsync($"{_settings.BaseUrl}/workflows/{workflowId}/run", null);
-            return response.IsSuccessStatusCode;
+            try
+            {
+                _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", await GetTokenAsync());
+                var response = await _httpClient.PostAsync($"{_settings.BaseUrl}/workflows/{workflowId}/run", null);
+                return response.IsSuccessStatusCode;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message); // log fir the background service
+                throw;
+            }
         }
     }
 }

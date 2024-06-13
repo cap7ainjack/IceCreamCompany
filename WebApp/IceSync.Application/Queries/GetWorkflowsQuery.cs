@@ -1,5 +1,5 @@
 ﻿using IceSync.Application.DTOs;
-using IceSync.Application.Models;
+using IceSync.Application.Models.ExternalApi;
 using IceSync.Application.Services.External;
 using MediatR;
 

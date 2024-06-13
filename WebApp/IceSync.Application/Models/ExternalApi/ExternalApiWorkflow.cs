@@ -1,6 +1,6 @@
 ﻿using System.Text.Json.Serialization;
 
-namespace IceSync.Application.Models
+namespace IceSync.Application.Models.ExternalApi
 {
     public class ExternalApiWorkflow
     {

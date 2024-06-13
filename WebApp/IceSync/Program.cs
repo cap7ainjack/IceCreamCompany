@@ -10,6 +10,7 @@ using IceSync.Domain.Repositories;
 using IceSync.Infrastructure.BackgroundServices;
 using IceSync.Infrastructure.EF;
 using IceSync.Infrastructure.EF.Repositories;
+using IceSync.Middleware;
 using MediatR;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
@@ -97,5 +98,7 @@ app.UseCors("AllowSpecificOrigins");
 
 RecurringJob.AddOrUpdate<ISynchronizationService>("synchronize-workflows", x => x.SynchronizeWorkflows(),
     Cron.MinuteInterval(builder.Configuration.GetValue<int>("Hangfire:JobIntervalInMinutes")));
+
+app.UseMiddleware<ExceptionMiddleware>();
 
 app.Run();
